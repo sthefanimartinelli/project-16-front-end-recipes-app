@@ -12,13 +12,9 @@ function Login() {
 
   const isDisabled = (inputPassword.length > EMAIL_LENGTH && emailRegex.test(inputEmail));
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = () => {
     localStorage.setItem('user', JSON.stringify({ email: inputEmail }));
-    const redirect = () => {
-      history.push('/meals');
-    };
-    redirect();
+    history.push('/meals');
   };
 
   return (
@@ -36,7 +32,7 @@ function Login() {
         onChange={ ({ target }) => setInputPassword(target.value) }
       />
       <button
-        type="submit"
+        type="button"
         data-testid="login-submit-btn"
         disabled={ !isDisabled }
         onClick={ handleSubmit }
