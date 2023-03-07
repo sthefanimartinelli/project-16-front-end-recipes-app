@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderWithRouter from './helpers/renderWith';
 import App from '../App';
@@ -7,7 +7,7 @@ import App from '../App';
 
 describe('Testes do componente Header', () => {
   test('Testa o caminho do Login até a página profile', async () => {
-    const { debug } = renderWithRouter(<App />);
+    const { debug, history } = renderWithRouter(<App />);
 
     const emailInput = screen.getByTestId('email-input');
     const passwordInput = screen.getByTestId('password-input');
@@ -18,44 +18,29 @@ describe('Testes do componente Header', () => {
     userEvent.click(btnSubmit);
     debug();
 
-    // const { pathname } = history.location;
+    const { pathname } = history.location;
 
-    // await waitFor(() => expect(pathname).toBe('/meals'));
-    // debug();
-    // await waitFor(() => screen.findByRole('heading', { name: /meals/i }), { timeout: 4000 });
+    await waitFor(() => expect(pathname).toBe('/meals'), { timeout: 4000 });
 
-    // expect(pathname).toBe('/meals');
-    // await waitFor(() => {
-    //   screen.getByRole('button', { name: /ícone de perfil/i });
-    // }, { timeout: 5000 });
+    const profileBtn = screen.getByRole('button', { name: /ícone de perfil/i });
 
-    // await waitFor(() => {
-    //   screen.findByRole('button', { name: /ícone de pesquisa/i });
-    // }, { timeout: 4000 });
+    const searchBtn = screen.getByTestId('search-top-btn');
 
-    // const profileBtn = screen.getByRole('button', { name: /ícone de perfil/i });
-    // const title = screen.getByRole('heading', {
-    //   name: /título/i,
-    // });
-    // const searchBtn = screen.getByTestId('search-top-btn');
+    expect(profileBtn).toBeInTheDocument();
+    expect(searchBtn).toBeInTheDocument();
 
-    // expect(profileBtn).toBeInTheDocument();
-    // expect(searchBtn).toBeInTheDocument();
+    userEvent.click(searchBtn);
 
-    // userEvent.click(profileBtn);
+    expect(screen.getByTestId('search-input')).toBeInTheDocument();
+    expect(screen.getByTestId('ingredient-search-radio')).toBeInTheDocument();
+    expect(screen.getByTestId('name-search-radio')).toBeInTheDocument();
+    expect(screen.getByTestId('first-letter-search-radio')).toBeInTheDocument();
+    expect(screen.getByTestId('exec-search-btn')).toBeInTheDocument();
 
-    // await waitFor(() => {
-    //   screen.getByTestId('page-title');
-    // }, { timeout: 4000 });
+    userEvent.click(searchBtn);
 
-    // expect(screen.getByTestId('search-top-btn')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('search-input')).not.toBeInTheDocument();
 
-    // act(() => {
-    //   history.push('./drinks');
-    // });
-
-    // await waitFor(() => {
-    //   screen.getByTestId('page-title');
-    // }, { timeout: 4000 });
+    userEvent.click(profileBtn);
   });
 });
