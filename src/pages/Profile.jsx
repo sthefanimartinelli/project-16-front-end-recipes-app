@@ -4,10 +4,10 @@ import Footer from '../components/Footer';
 
 function Profile() {
   return (
-    <>
+    <div>
       <Header />
       <Footer />
-    </>
+    </div>
   );
 }
 
