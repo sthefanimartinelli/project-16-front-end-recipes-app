@@ -10,14 +10,6 @@ function Header() {
   const history = useHistory();
   const [searchBtn, setSearchBtn] = useState(false);
 
-  const btnStatus = () => {
-    if (searchBtn === false) {
-      setSearchBtn(true);
-    } else {
-      setSearchBtn(false);
-    }
-  };
-
   // const redirectProfile = () => <Redirect to="/profile" />;
 
   // Código baseado em https://forum.freecodecamp.org/t/freecodecamp-challenge-guide-title-case-a-sentence/16088
@@ -55,11 +47,11 @@ function Header() {
           type="button"
           data-testid="search-top-btn"
           src={ searchIcon }
-          onClick={ btnStatus }
+          onClick={ () => setSearchBtn(!searchBtn) }
         >
           <img src={ searchIcon } alt="ícone de pesquisa" />
         </button>) }
-      { searchBtn === true && <SearchBar /> }
+      { searchBtn && <SearchBar /> }
     </div>
   );
 }
