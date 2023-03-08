@@ -1,21 +1,27 @@
 import PropTypes from 'prop-types';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import RecipesContext from './RecipesContext';
 
 function RecipesProvider({ children }) {
+  const [recipes, setRecipes] = useState([]);
+  const [recipesFiltered, setRecipesFiltered] = useState([]);
+
   const context = useMemo(() => ({
-    oi: 'oi',
-  }), []);
+    recipes,
+    recipesFiltered,
+    setRecipes,
+    setRecipesFiltered,
+  }), [recipes, recipesFiltered]);
 
   return (
     <RecipesContext.Provider value={ context }>
-      { children }
+      {children}
     </RecipesContext.Provider>
   );
 }
 
 RecipesProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+  children: PropTypes.any,
+}.isRequired;
 
 export default RecipesProvider;

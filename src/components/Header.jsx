@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import searchIcon from '../images/searchIcon.svg';
 import profileIcon from '../images/profileIcon.svg';
 import SearchBar from './SearchBar';
+import pageTitle from '../helpers/pageTitle';
 
 function Header() {
   const location = useLocation();
 
   const history = useHistory();
+  const [titleOfPage, setTitleOfPage] = useState('');
   const [searchBtn, setSearchBtn] = useState(false);
 
   const btnStatus = () => {
@@ -18,28 +20,16 @@ function Header() {
     }
   };
 
-  // const redirectProfile = () => <Redirect to="/profile" />;
-
-  // Código baseado em https://forum.freecodecamp.org/t/freecodecamp-challenge-guide-title-case-a-sentence/16088
-  function capitalCase(string) {
-    // Tira o hifen da url
-    const removeHyphen = string.replace('-', ' ');
-    // Tira a / da url
-    const removeSlash = removeHyphen.slice(1);
-    // Transforma em upperCase cada primeira letra
-    return removeSlash
-      .toLowerCase()
-      .split(' ')
-      .map((word) => word.replace(word.charAt(0), word.charAt(0).toUpperCase()))
-      .join(' ');
-  }
+  useEffect(() => {
+    setTitleOfPage(pageTitle(location.pathname));
+  }, [location]);
 
   return (
     <div>
       <h1
         data-testid="page-title"
       >
-        { capitalCase(location.pathname) }
+        { titleOfPage }
       </h1>
       <button
         type="button"
