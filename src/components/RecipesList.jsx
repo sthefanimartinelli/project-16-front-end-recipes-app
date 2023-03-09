@@ -13,15 +13,9 @@ export default function RecipesList() {
     if (pathname === '/meals') {
       if (recipes?.length === 1) {
         history.push(`/meals/${recipes[0].idMeal}`);
-      } else if (recipes?.length === 0) {
-        global.alert('Sorry, we haven\'t found any recipes for these filters.');
       }
-    } else if (pathname === '/drinks') {
-      if (recipes?.length === 1) {
-        history.push(`/drinks/${recipes[0].idDrink}`);
-      } else if (recipes?.length === 0) {
-        global.alert('Sorry, we haven\'t found any recipes for these filters.');
-      }
+    } else if (recipes?.length === 1) {
+      history.push(`/drinks/${recipes[0].idDrink}`);
     }
   };
   // para buscar receitas de comida ou bebida da API dependendo do valor da variável stateApi e atualizar o estado das receitas do componente.

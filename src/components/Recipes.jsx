@@ -12,7 +12,6 @@ function Recipes() {
   const categoryMeals = async () => {
     const response = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list');
     const data = await response.json();
-    console.log(data);
     setCategory(data.meals);
   };
 
@@ -24,13 +23,12 @@ function Recipes() {
   const selectCategory = () => {
     if (location.pathname === '/meals') {
       categoryMeals();
-    } else if (location.pathname === '/drinks') {
+    } else {
       categoryDrinks();
     }
   };
 
   useEffect(() => {
-    console.log('carreguei');
     selectCategory();
   }, []);
   const applyFilterMeals = async (name) => {
@@ -64,7 +62,7 @@ function Recipes() {
       >
         All
       </button>
-      {categories.slice(0, LIMITS).map((category, i) => (
+      {categories?.slice(0, LIMITS).map((category, i) => (
         <button
           type="button"
           key={ i }
