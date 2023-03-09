@@ -22,8 +22,8 @@ describe('Testes da página Login', () => {
     expect(loginBtn).toBeDisabled();
   });
 
-  test('Testa se o botão fica desabilitado quando os inputs não estão preenchidos corretamente, e se habilita ao preencher corretamente', () => {
-    renderWithRouter(<App />);
+  test('Testa se o botão fica desabilitado quando os inputs não estão preenchidos corretamente, e se habilita ao preencher corretamente', async () => {
+    const { history } = renderWithRouter(<App />);
 
     const emailElement = screen.getByTestId(EMAIL_INPUT_TEST_ID);
     const passwordElement = screen.getByTestId(PASSWORD_INPUT_TEST_ID);
@@ -37,7 +37,10 @@ describe('Testes da página Login', () => {
     userEvent.type(passwordElement, '1234567');
     expect(loginBtn).toBeEnabled();
     userEvent.click(loginBtn);
-    // expect(history.location.pathname).toBe('/meals');
+    await waitFor(() => {
+      expect(history.location.pathname).toBe('/meals');
+    });
+
     // expect(window.localStorage.setItem).toHaveBeenCalledTimes(1);
     // expect(window.localStorage.setItem).toHaveBeenCalledWith('user', '');
   });

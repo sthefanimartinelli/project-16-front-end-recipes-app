@@ -1,12 +1,12 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import RecipesProvider from './context/RecipesProvider';
 import Login from './pages/Login';
 import Meals from './pages/Meals';
 import Drinks from './pages/Drinks';
-import MealsDetails from './pages/MealsDetails';
-import DrinksDetails from './pages/DrinksDetails';
+import RecipeDetails from './components/RecipeDetails';
 import MealInProgress from './pages/MealInProgress';
 import DrinkInProgress from './pages/DrinkInProgress';
 import Profile from './pages/Profile';
@@ -28,12 +28,12 @@ function App() {
           <Route
             exact
             path="/meals/:id"
-            component={ MealsDetails }
+            component={ RecipeDetails }
           />
           <Route
             exact
             path="/drinks/:id"
-            component={ DrinksDetails }
+            component={ RecipeDetails }
           />
           <Route
             exact

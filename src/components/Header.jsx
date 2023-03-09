@@ -11,6 +11,15 @@ function Header() {
   const history = useHistory();
   const [titleOfPage, setTitleOfPage] = useState('');
   const [searchBtn, setSearchBtn] = useState(false);
+
+  const btnStatus = () => {
+    if (searchBtn === false) {
+      setSearchBtn(true);
+    } else {
+      setSearchBtn(false);
+    }
+  };
+
   useEffect(() => {
     setTitleOfPage(pageTitle(location.pathname));
   }, [location]);
@@ -36,11 +45,11 @@ function Header() {
           type="button"
           data-testid="search-top-btn"
           src={ searchIcon }
-          onClick={ () => setSearchBtn(!searchBtn) }
+          onClick={ btnStatus }
         >
           <img src={ searchIcon } alt="ícone de pesquisa" />
         </button>) }
-      { searchBtn && <SearchBar /> }
+      { searchBtn === true && <SearchBar /> }
     </div>
   );
 }
