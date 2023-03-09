@@ -7,6 +7,8 @@ function Recipes() {
   const { setRecipesFiltered } = useContext(RecipesContext);
   const location = useLocation();
   const [categories, setCategory] = useState([]);
+  const [chosenFilter, setChosenFilter] = useState('');
+
   const categoryMeals = async () => {
     const response = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list');
     const data = await response.json();
@@ -39,13 +41,19 @@ function Recipes() {
     const data = await response.json();
     setRecipesFiltered(data.drinks);
   };
-  const filterSelect = (name) => {
-    if (location.pathname === '/meals') {
-      applyFilterMeals(name);
+
+  const filterSelect = (category) => {
+    if (chosenFilter === category.strCategory) {
+      setRecipesFiltered([]);
+    } else if (location.pathname === '/meals') {
+      applyFilterMeals(category.strCategory);
+      setChosenFilter(category.strCategory);
     } else {
-      applyFilterDrinks(name);
+      applyFilterDrinks(category.strCategory);
+      setChosenFilter(category.strCategory);
     }
   };
+
   return (
     <div>
       <button
@@ -59,7 +67,7 @@ function Recipes() {
           type="button"
           key={ i }
           data-testid={ `${category.strCategory}-category-filter` }
-          onClick={ () => filterSelect(category.strCategory) }
+          onClick={ () => filterSelect(category) }
         >
           {category.strCategory}
         </button>
