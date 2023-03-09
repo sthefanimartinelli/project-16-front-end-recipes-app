@@ -11,7 +11,7 @@ function Header() {
   const history = useHistory();
   const [titleOfPage, setTitleOfPage] = useState('');
   const [searchBtn, setSearchBtn] = useState(false);
-
+  
   useEffect(() => {
     setTitleOfPage(pageTitle(location.pathname));
   }, [location]);
