@@ -15,6 +15,7 @@ function Recipes() {
     console.log(data);
     setCategory(data.meals);
   };
+
   const categoryDrinks = async () => {
     const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list');
     const data = await response.json();
@@ -27,6 +28,7 @@ function Recipes() {
       categoryDrinks();
     }
   };
+
   useEffect(() => {
     console.log('carreguei');
     selectCategory();
