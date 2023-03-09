@@ -21,7 +21,6 @@ function Recipes() {
     const data = await response.json();
     setCategory(data.drinks);
   };
-
   const selectCategory = () => {
     if (location.pathname === '/meals') {
       categoryMeals();
@@ -34,7 +33,6 @@ function Recipes() {
     console.log('carreguei');
     selectCategory();
   }, []);
-
   const applyFilterMeals = async (name) => {
     const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${name}`);
     const data = await response.json();

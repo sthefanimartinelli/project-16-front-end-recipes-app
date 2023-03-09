@@ -1,6 +1,5 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import RecipesProvider from './context/RecipesProvider';
 import Login from './pages/Login';
