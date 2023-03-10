@@ -10,8 +10,17 @@ function RecipeDetails() {
   const [youtubeVideo, setYoutubeVideo] = useState('');
   const [categoryOrAlcoholic, setCategoryOrAlcoholic] = useState('');
   const [recomendation, setRecomendation] = useState([]);
+
   const location = useLocation();
   const { pathname } = location;
+
+  const isRecipeDone = () => {
+    const id = pathname.split('/')[2];
+    const doneRecipesList = JSON.parse(localStorage.getItem('doneRecipes')) || [];
+    if (doneRecipesList.length > 0) {
+      return doneRecipesList.some((recipe) => recipe.id === id);
+    }
+  };
 
   const fecthRecomendation = async () => {
     if (pathname.includes('meals')) {
@@ -173,6 +182,16 @@ function RecipeDetails() {
             </div>
           ))) }
       </div>
+      { !isRecipeDone()
+      && (
+        <button
+          className="start-recipe-btn"
+          data-testid="start-recipe-btn"
+          type="button"
+        >
+          Start Recipe
+        </button>
+      )}
     </>
   );
 }

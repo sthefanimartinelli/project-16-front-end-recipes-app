@@ -20,3 +20,8 @@
   position: relative;
   width: calc((100vw) / 2);
 }
+
+.start-recipe-btn {
+  bottom: 0;
+  position: fixed;
+}
