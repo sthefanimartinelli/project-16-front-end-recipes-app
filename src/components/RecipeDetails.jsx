@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import './RecipeDetails.css';
+
+const RECOMENDATION_NUMBER = 6;
 
 function RecipeDetails() {
   const [details, setDetails] = useState([]);
@@ -78,8 +81,6 @@ function RecipeDetails() {
     fecthRecomendation();
   }, []);
 
-  console.log(recomendation);
-
   return (
     <>
       { pathname.includes('meals')
@@ -127,6 +128,51 @@ function RecipeDetails() {
           </p>
         ))
       }
+
+      <h1>Recomendados</h1>
+      <div className="recomendation-carousel">
+        { pathname.includes('meals')
+        && (
+          recomendation.slice(0, RECOMENDATION_NUMBER).map((item, index) => (
+            <div
+              className="recomendation-div"
+              key={ index }
+              data-testid={ `${index}-recommendation-card` }
+            >
+              <img
+                className="imgRecomended"
+                src={ item.strDrinkThumb }
+                alt={ item.strDrink }
+              />
+              <h2
+                data-testid={ `${index}-recommendation-title` }
+              >
+                {item.strDrink}
+              </h2>
+            </div>
+          ))) }
+
+        { pathname.includes('drinks')
+        && (
+          recomendation.slice(0, RECOMENDATION_NUMBER).map((item, index) => (
+            <div
+              className="recomendation-div"
+              key={ index }
+              data-testid={ `${index}-recommendation-card` }
+            >
+              <img
+                className="imgRecomended"
+                src={ item.strMealThumb }
+                alt={ item.strMeal }
+              />
+              <h2
+                data-testid={ `${index}-recommendation-title` }
+              >
+                {item.strMeal}
+              </h2>
+            </div>
+          ))) }
+      </div>
     </>
   );
 }

@@ -1,0 +1,22 @@
+.recomendation-carousel {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  margin: 0 0 30px;
+  overflow-y: auto;
+  position: relative;
+  gap: 10vw;
+  height: 100%;
+  width: 100%;
+}
+
+.recommendation-div {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.imgRecomended {
+  position: relative;
+  width: calc((100vw) / 2);
+}
