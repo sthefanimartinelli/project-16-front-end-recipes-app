@@ -17,7 +17,6 @@ function SearchBar() {
     try {
       if (history.location.pathname === '/meals') {
         const result = await searchMealsAPI(radioValue, searchValue);
-        console.log(result);
         if (result.meals.length === 1) {
           history.push(`/meals/${result.meals[0].idMeal}`);
         } else {
@@ -28,7 +27,6 @@ function SearchBar() {
         if (result.drinks.length === 1) {
           history.push(`/drinks/${result.drinks[0].idDrink}`);
         } else {
-          // console.log(result.drinks);
           setDataDrinks(result.drinks);
         }
       }
@@ -96,7 +94,6 @@ function SearchBar() {
               </p>
             </div>
           ))}
-
       {dataDrinks
         && dataDrinks.slice(0, TO_THIS_INDEX)
           .map(({ strDrink, strDrinkThumb }, index) => (
@@ -116,7 +113,6 @@ function SearchBar() {
               </p>
             </div>
           ))}
-
     </div>
   );
 }
