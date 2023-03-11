@@ -22,6 +22,15 @@ function RecipeDetails() {
     }
   };
 
+  const isRecipeInProgress = () => {
+    const category = pathname.split('/')[1];
+    const id = pathname.split('/')[2];
+    const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes')) || {};
+    if (Object.keys(inProgress).length > 0) {
+      return Object.keys(inProgress[category]).includes(id);
+    }
+  };
+
   const fecthRecomendation = async () => {
     if (pathname.includes('meals')) {
       const responseDetails = await fetch('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=');
@@ -182,6 +191,16 @@ function RecipeDetails() {
             </div>
           ))) }
       </div>
+      { isRecipeInProgress()
+        && (
+          <button
+            className="start-recipe-btn"
+            data-testid="start-recipe-btn"
+            type="button"
+          >
+            Continue Recipe
+          </button>
+        )}
       { !isRecipeDone()
       && (
         <button
