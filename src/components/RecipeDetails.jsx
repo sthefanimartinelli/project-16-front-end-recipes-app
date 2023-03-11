@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import './RecipeDetails.css';
 import clipboardCopy from 'clipboard-copy';
+import whiteHeartIcon from '../images/whiteHeartIcon.svg';
+import blackHeartIcon from '../images/blackHeartIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
+import { favoriteRecipes, isAlreadyFavorite } from '../helpers/favoriteRecipes';
 
 const RECOMENDATION_NUMBER = 6;
 
@@ -13,11 +16,11 @@ function RecipeDetails() {
   const [categoryOrAlcoholic, setCategoryOrAlcoholic] = useState('');
   const [recomendation, setRecomendation] = useState([]);
   const [isShared, setIsShared] = useState(false);
+  const [isFavorite, setIsFavorite] = useState();
 
   const history = useHistory();
   const location = useLocation();
   const { pathname } = location;
-  // const { copy } = clipboardCopy;
 
   const shareRecipe = () => {
     clipboardCopy(`http://localhost:3000${pathname}`);
@@ -119,6 +122,7 @@ function RecipeDetails() {
   useEffect(() => {
     fetchRecipe();
     fecthRecomendation();
+    isAlreadyFavorite(pathname, setIsFavorite);
   }, []);
 
   return (
@@ -131,10 +135,12 @@ function RecipeDetails() {
         <img src={ shareIcon } alt="share icon" />
       </button>
       <button
+        src={ isFavorite ? blackHeartIcon : whiteHeartIcon }
         type="button"
         data-testid="favorite-btn"
+        onClick={ () => favoriteRecipes(details, pathname, setIsFavorite) }
       >
-        Favoritar Receita
+        <img src={ isFavorite ? blackHeartIcon : whiteHeartIcon } alt="" />
       </button>
       { isShared && <span>Link copied!</span>}
       { pathname.includes('meals')
