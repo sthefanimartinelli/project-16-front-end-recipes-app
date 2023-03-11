@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import './RecipeDetails.css';
+import clipboardCopy from 'clipboard-copy';
+import shareIcon from '../images/shareIcon.svg';
 
 const RECOMENDATION_NUMBER = 6;
 
@@ -10,9 +12,29 @@ function RecipeDetails() {
   const [youtubeVideo, setYoutubeVideo] = useState('');
   const [categoryOrAlcoholic, setCategoryOrAlcoholic] = useState('');
   const [recomendation, setRecomendation] = useState([]);
+  const [isShared, setIsShared] = useState(false);
 
+  const history = useHistory();
   const location = useLocation();
   const { pathname } = location;
+  // const { copy } = clipboardCopy;
+
+  const shareRecipe = () => {
+    clipboardCopy(`http://localhost:3000${pathname}`);
+    if (isShared === false) {
+      setIsShared(true);
+    }
+  };
+
+  const goToStartRecipe = () => {
+    const category = pathname.split('/')[1];
+    const id = pathname.split('/')[2];
+    if (category.includes('meals')) {
+      history.push(`/meals/${id}/in-progress`);
+    } else {
+      history.push(`/drinks/${id}/in-progress`);
+    }
+  };
 
   const isRecipeDone = () => {
     const id = pathname.split('/')[2];
@@ -101,6 +123,20 @@ function RecipeDetails() {
 
   return (
     <>
+      <button
+        type="button"
+        data-testid="share-btn"
+        onClick={ () => shareRecipe() }
+      >
+        <img src={ shareIcon } alt="share icon" />
+      </button>
+      <button
+        type="button"
+        data-testid="favorite-btn"
+      >
+        Favoritar Receita
+      </button>
+      { isShared && <span>Link copied!</span>}
       { pathname.includes('meals')
         && (
           <div>
@@ -207,6 +243,7 @@ function RecipeDetails() {
           className="start-recipe-btn"
           data-testid="start-recipe-btn"
           type="button"
+          onClick={ goToStartRecipe }
         >
           Start Recipe
         </button>
@@ -214,5 +251,4 @@ function RecipeDetails() {
     </>
   );
 }
-
 export default RecipeDetails;
