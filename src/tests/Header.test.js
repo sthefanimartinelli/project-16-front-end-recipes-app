@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouter } from './helpers/renderWith';
 import App from '../App';
@@ -8,7 +8,7 @@ const SEARCH_INPUT_TEST_ID = 'search-input';
 
 describe('Testes do componente Header', () => {
   test('Testa se os elementos são renderizados na página Meals', async () => {
-    renderWithRouter(<App />, { initialEntries: ['/meals'] });
+    const { history } = renderWithRouter(<App />, { initialEntries: ['/meals'] });
 
     const pageTitle = screen.queryByRole('heading', { name: /meals/i });
     const profileBtn = screen.queryByTestId('profile-top-btn');
@@ -22,20 +22,24 @@ describe('Testes do componente Header', () => {
 
     userEvent.click(searchBtn);
 
-    expect(screen.getByTestId(SEARCH_INPUT_TEST_ID)).toBeInTheDocument();
-    expect(screen.getByTestId('ingredient-search-radio')).toBeInTheDocument();
-    expect(screen.getByTestId('name-search-radio')).toBeInTheDocument();
-    expect(screen.getByTestId('first-letter-search-radio')).toBeInTheDocument();
-    expect(screen.getByTestId('exec-search-btn')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId(SEARCH_INPUT_TEST_ID)).toBeInTheDocument();
+      expect(screen.getByTestId('ingredient-search-radio')).toBeInTheDocument();
+      expect(screen.getByTestId('name-search-radio')).toBeInTheDocument();
+      expect(screen.getByTestId('first-letter-search-radio')).toBeInTheDocument();
+      expect(screen.getByTestId('exec-search-btn')).toBeInTheDocument();
+    });
 
     userEvent.click(searchBtn);
 
-    expect(screen.queryByTestId(SEARCH_INPUT_TEST_ID)).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByTestId(SEARCH_INPUT_TEST_ID)).not.toBeInTheDocument();
+    });
 
     userEvent.click(profileBtn);
-  });
 
-  test('Testa se o searchBar desaparece quando o botão de pesquisa é clicado duas vezes', () => {
-
+    await waitFor(() => {
+      expect(history.location.pathname).toBe('/profile');
+    });
   });
 });

@@ -6,6 +6,7 @@ import { renderWithRouter } from './helpers/renderWith';
 import App from '../App';
 import mealCategories from '../../cypress/mocks/mealCategories';
 import drinkCategories from '../../cypress/mocks/drinkCategories';
+import cocoaDrinks from '../../cypress/mocks/cocoaDrinks';
 
 describe('Testes do componente Recipes', () => {
   const ALL_FILTER_ID = 'All-category-filter';
@@ -20,7 +21,7 @@ describe('Testes do componente Recipes', () => {
 
     renderWithRouter(<App />, { initialEntries: ['/meals'] });
 
-    expect(screen.getByTestId('page-title')).toBeInTheDocument();
+    expect(await screen.findByTestId('page-title')).toBeInTheDocument();
 
     await waitFor(() => {
       const allFilter = screen.getByTestId(ALL_FILTER_ID);
@@ -37,24 +38,20 @@ describe('Testes do componente Recipes', () => {
 
     const breakfastFilter = screen.getByTestId(BREAKFAST_FILTER_ID);
     userEvent.click(breakfastFilter);
-    userEvent.click(breakfastFilter);
   });
 
   test('Testa se ao entrar na página Drinks os 5 primeiros filtros são renderizados', async () => {
-    jest.spyOn(global, 'fetch');
-    global.fetch.mockResolvedValue({
-      json: jest.fn().mockResolvedValue(drinkCategories),
-    });
+    global.fetch = jest.fn()
+      .mockResolvedValueOnce({
+        json: jest.fn().mockResolvedValue(drinkCategories),
+      })
+      .mockResolvedValue({
+        json: jest.fn().mockResolvedValue(cocoaDrinks),
+      });
 
     renderWithRouter(<App />, { initialEntries: ['/drinks'] });
 
-    expect(screen.getByTestId('page-title')).toBeInTheDocument();
-
-    await waitFor(() => {
-      const allFilter = screen.getByTestId(ALL_FILTER_ID);
-      expect(allFilter).toBeInTheDocument();
-    });
-
+    expect(await screen.findByTestId(ALL_FILTER_ID)).toBeInTheDocument();
     expect(await screen.findByTestId('Ordinary Drink-category-filter')).toBeInTheDocument();
     expect(await screen.findByTestId('Cocktail-category-filter')).toBeInTheDocument();
     expect(await screen.findByTestId('Shake-category-filter')).toBeInTheDocument();
@@ -64,8 +61,16 @@ describe('Testes do componente Recipes', () => {
     expect(global.fetch).toHaveBeenCalledTimes(2);
 
     const cocoaFilter = screen.getByTestId(COCOA_FILTER_ID);
+
     userEvent.click(cocoaFilter);
+
+    expect(await screen.findByText(/castillian hot chocolate/i)).toBeInTheDocument();
+
+    expect(await screen.findByTestId(COCOA_FILTER_ID)).toBeInTheDocument();
+
     userEvent.click(cocoaFilter);
+
+    expect(await screen.findByText(/chocolate beverage/i)).toBeInTheDocument();
   });
 
   test('Testa se ao clicar no botão de filtro All, todos os drinks são renderizados', async () => {

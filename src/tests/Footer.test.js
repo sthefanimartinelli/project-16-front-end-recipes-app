@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouter } from './helpers/renderWith';
 import App from '../App';
@@ -8,24 +8,29 @@ describe('Testes do componente Footer', () => {
   test('Testa se os elementos do Footer são renderizados na página Drinks e Meals', async () => {
     renderWithRouter(<App />, { initialEntries: ['/drinks'] });
 
-    const drinkBtn = screen.queryByTestId('drinks-bottom-btn');
-    const mealBtn = screen.queryByTestId('meals-bottom-btn');
+    const drinkBtn = await screen.findByTestId('drinks-bottom-btn');
+    const mealBtn = await screen.findByTestId('meals-bottom-btn');
 
     expect(drinkBtn).toBeInTheDocument();
     expect(mealBtn).toBeInTheDocument();
   });
-  test('Testa se as rotas para as páginas /meals e /drinks por meio dos botões do footer funcionam', () => {
-    renderWithRouter(<App />, { initialEntries: ['/drinks'] });
+  test('Testa se as rotas para as páginas /meals e /drinks por meio dos botões do footer funcionam', async () => {
+    const { history } = renderWithRouter(<App />, { initialEntries: ['/drinks'] });
 
-    const mealBtn = screen.queryByTestId('meals-bottom-btn');
+    const mealBtn = await screen.findByTestId('meals-bottom-btn');
 
     userEvent.click(mealBtn);
 
-    expect(screen.queryByTestId('page-title').innerHTML).toBe('Meals');
+    await waitFor(() => {
+      expect(history.location.pathname).toBe('/meals');
+    });
 
-    const newDrinkBtn = screen.queryByTestId('drinks-bottom-btn');
-    userEvent.click(newDrinkBtn);
+    const drinkBtn = await screen.findByTestId('drinks-bottom-btn');
 
-    expect(screen.queryByRole('heading', { name: /drinks/i })).toBeInTheDocument();
+    userEvent.click(drinkBtn);
+
+    await waitFor(() => {
+      expect(history.location.pathname).toBe('/drinks');
+    });
   });
 });
