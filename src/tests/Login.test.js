@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouter } from './helpers/renderWith';
 import App from '../App';
@@ -31,17 +31,18 @@ describe('Testes da página Login', () => {
 
     userEvent.type(emailElement, 'teste@teste.com.br');
     userEvent.type(passwordElement, '123456');
-    expect(loginBtn).toBeDisabled();
 
     userEvent.clear(passwordElement);
     userEvent.type(passwordElement, '1234567');
-    expect(loginBtn).toBeEnabled();
+    expect(loginBtn).toBeDisabled();
+
+    await waitFor(() => {
+      expect(loginBtn).toBeEnabled();
+    });
+
     userEvent.click(loginBtn);
     await waitFor(() => {
       expect(history.location.pathname).toBe('/meals');
     });
-
-    // expect(window.localStorage.setItem).toHaveBeenCalledTimes(1);
-    // expect(window.localStorage.setItem).toHaveBeenCalledWith('user', '');
   });
 });

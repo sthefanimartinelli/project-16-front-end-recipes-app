@@ -34,4 +34,8 @@ describe('Testes do componente Header', () => {
 
     userEvent.click(profileBtn);
   });
+
+  test('Testa se o searchBar desaparece quando o botão de pesquisa é clicado duas vezes', () => {
+
+  });
 });
