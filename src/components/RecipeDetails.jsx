@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import './RecipeDetails.css';
@@ -7,6 +6,7 @@ import whiteHeartIcon from '../images/whiteHeartIcon.svg';
 import blackHeartIcon from '../images/blackHeartIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
 import { favoriteRecipes, isAlreadyFavorite } from '../helpers/favoriteRecipes';
+import { goToStartRecipe } from '../helpers/startRecipe';
 
 const RECOMENDATION_NUMBER = 6;
 
@@ -27,16 +27,6 @@ function RecipeDetails() {
     clipboardCopy(`http://localhost:3000${pathname}`);
     if (isShared === false) {
       setIsShared(true);
-    }
-  };
-
-  const goToStartRecipe = () => {
-    const category = pathname.split('/')[1];
-    const id = pathname.split('/')[2];
-    if (category.includes('meals')) {
-      history.push(`/meals/${id}/in-progress`);
-    } else {
-      history.push(`/drinks/${id}/in-progress`);
     }
   };
 
@@ -212,7 +202,6 @@ function RecipeDetails() {
               </h2>
             </div>
           ))) }
-
         { pathname.includes('drinks')
         && (
           recomendation.slice(0, RECOMENDATION_NUMBER).map((item, index) => (
@@ -250,7 +239,7 @@ function RecipeDetails() {
           className="start-recipe-btn"
           data-testid="start-recipe-btn"
           type="button"
-          onClick={ goToStartRecipe }
+          onClick={ () => goToStartRecipe(pathname, history) }
         >
           Start Recipe
         </button>
