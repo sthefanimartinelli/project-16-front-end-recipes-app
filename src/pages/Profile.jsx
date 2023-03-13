@@ -5,7 +5,7 @@ import Header from '../components/Header';
 
 function Profile() {
   const history = useHistory();
-  const emailLogin = JSON.parse(localStorage.getItem('user')) || [];
+  const emailLogin = JSON.parse(localStorage.getItem('user')) || '';
   console.log(emailLogin);
   const direcionarParaDoneRecipes = () => {
     history.push('/done-recipes');
@@ -21,7 +21,7 @@ function Profile() {
     <div>
       <Header />
       <p data-testid="profile-email">
-        { emailLogin.lenght > 0 && emailLogin.email }
+        { emailLogin !== '' && emailLogin.email }
         {' '}
       </p>
       <button
