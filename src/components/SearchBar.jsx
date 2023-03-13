@@ -1,40 +1,41 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { searchMealsAPI } from '../services/searchMealsAPI';
 import { searchDrinksAPI } from '../services/searchDrinksAPI';
+import RecipesContext from '../context/RecipesContext';
 
-function SearchBar() {
-  const TO_THIS_INDEX = 12;
+function SearchBar() { // alterado
   const history = useHistory();
   const [searchValue, setSearch] = useState('');
   const [radioValue, setRadioValue] = useState('');
-  const [dataMeals, setDataMeals] = useState([]);
-  const [dataDrinks, setDataDrinks] = useState([]);
+  const { setRecipesFiltered } = useContext(RecipesContext);
   const handleChange = ({ target: { value } }) => {
     setRadioValue(value);
   };
-  const handleClick = async () => {
-    try {
-      if (history.location.pathname === '/meals') {
-        const result = await searchMealsAPI(radioValue, searchValue);
-        if (result.meals.length === 1) {
-          history.push(`/meals/${result.meals[0].idMeal}`);
-        } else {
-          setDataMeals(result.meals);
-        }
-      } else if (history.location.pathname === '/drinks') {
-        const result = await searchDrinksAPI(radioValue, searchValue);
-        if (result.drinks.length === 1) {
-          history.push(`/drinks/${result.drinks[0].idDrink}`);
-        } else {
-          setDataDrinks(result.drinks);
-        }
+  const handleClick = async () => { // alterado
+    if (history.location.pathname === '/meals') {
+      const result = await searchMealsAPI(radioValue, searchValue);
+      if (result.meals === null) {
+        return global.alert('Sorry, we haven\'t found any recipes for these filters.');
       }
-    } catch (error) {
-      global.alert('Sorry, we haven\'t found any recipes for these filters.');
+      setRecipesFiltered(result.meals);
+      if (result.meals.length === 1) {
+        history.push(`/meals/${result.meals[0].idMeal}`);
+      }
+    } else {
+      const result = await searchDrinksAPI(radioValue, searchValue);
+      if (result.drinks === null) {
+        return global.alert('Sorry, we haven\'t found any recipes for these filters.');
+      }
+      setRecipesFiltered(result.drinks);
+      if (result.drinks.length === 1) {
+        console.log('detalhe');
+        console.log('oi');
+        history.push(`/drinks/${result.drinks[0].idDrink}`);
+      }
     }
   };
-  return (
+  return (// alterado
     <div>
       <form>
         <input
@@ -74,45 +75,6 @@ function SearchBar() {
       >
         Buscar
       </button>
-      {dataMeals
-        && dataMeals.slice(0, TO_THIS_INDEX)
-          .map(({ strMeal, strMealThumb }, index) => (
-            <div
-              key={ strMeal }
-              data-testid={ `${index}-recipe-card` }
-            >
-              <img
-                style={ { width: '100px' } }
-                data-testid={ `${index}-card-img` }
-                src={ strMealThumb }
-                alt={ strMeal }
-              />
-              <p
-                data-testid={ `${index}-card-name` }
-              >
-                {strMeal}
-              </p>
-            </div>
-          ))}
-      {dataDrinks
-        && dataDrinks.slice(0, TO_THIS_INDEX)
-          .map(({ strDrink, strDrinkThumb }, index) => (
-            <div
-              key={ strDrink }
-              data-testid={ `${index}-recipe-card` }
-            >
-              <img
-                data-testid={ `${index}-card-img` }
-                src={ strDrinkThumb }
-                alt={ strDrink }
-              />
-              <p
-                data-testid={ `${index}-card-name` }
-              >
-                {strDrink}
-              </p>
-            </div>
-          ))}
     </div>
   );
 }

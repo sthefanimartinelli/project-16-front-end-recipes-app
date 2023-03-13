@@ -1,13 +1,5 @@
-export const favoriteRecipes = (recipe, pathname, setIsFavorite) => {
-  const id = pathname.split('/')[2];
-  const type = pathname.includes('meals') ? 'meal' : 'drink';
-
-  const name = pathname.includes('meals') ? recipe.strMeal : recipe.strDrink;
-  const image = pathname.includes('meals')
-    ? recipe.strMealThumb : recipe.strDrinkThumb;
-  const nationality = recipe.strArea ? recipe.strArea : '';
-  const alcoholicOrNot = recipe.strAlcoholic ? recipe.strAlcoholic : '';
-  const category = recipe.strCategory ? recipe.strCategory : '';
+export const favoriteRecipes = (details, pathname, setIsFavorite) => {
+  const { id, type, nationality, category, alcoholicOrNot, name, thumb } = details;
 
   const newFavoriteRecipe = ({
     id,
@@ -16,7 +8,7 @@ export const favoriteRecipes = (recipe, pathname, setIsFavorite) => {
     category,
     alcoholicOrNot,
     name,
-    image,
+    image: thumb,
   });
 
   const favoritesOnStorage = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
@@ -24,7 +16,7 @@ export const favoriteRecipes = (recipe, pathname, setIsFavorite) => {
     const isItemFavorite = favoritesOnStorage.some((fav) => fav.id === id);
     if (isItemFavorite) {
       const newFavoritesArray = favoritesOnStorage
-        .filter((favourite) => favourite.id !== id);
+        .filter((favorite) => favorite.id !== id);
       localStorage.setItem('favoriteRecipes', JSON.stringify(newFavoritesArray));
       return setIsFavorite(false);
     }

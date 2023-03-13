@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import './RecipeDetails.css';
 import clipboardCopy from 'clipboard-copy';
@@ -7,17 +7,18 @@ import blackHeartIcon from '../images/blackHeartIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
 import { favoriteRecipes, isAlreadyFavorite } from '../helpers/favoriteRecipes';
 import { goToStartRecipe } from '../helpers/startRecipe';
+import { fecthRecomendation, treatAPIdata } from '../helpers/fetchDetails';
+import RecipesContext from '../context/RecipesContext';
 
 const RECOMENDATION_NUMBER = 6;
 
 function RecipeDetails() {
-  const [details, setDetails] = useState([]);
-  const [ingredients, setIngredients] = useState([]);
-  const [youtubeVideo, setYoutubeVideo] = useState('');
-  const [categoryOrAlcoholic, setCategoryOrAlcoholic] = useState('');
   const [recomendation, setRecomendation] = useState([]);
   const [isShared, setIsShared] = useState(false);
   const [isFavorite, setIsFavorite] = useState();
+
+  const context = useContext(RecipesContext);
+  const { details, setDetails } = context;
 
   const history = useHistory();
   const location = useLocation();
@@ -47,75 +48,13 @@ function RecipeDetails() {
     }
   };
 
-  const fecthRecomendation = async () => {
-    if (pathname.includes('meals')) {
-      const responseDetails = await fetch('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=');
-      const dataDetails = await responseDetails.json();
-      setRecomendation(dataDetails.drinks);
-    } else {
-      const responseDetails = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
-      const dataDetails = await responseDetails.json();
-      setRecomendation(dataDetails.meals);
-    }
-  };
-
-  const fetchRecipe = async () => {
-    const id = pathname.split('/')[2];
-    if (pathname.includes('meals')) {
-      const responseDetails = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
-      const dataDetails = await responseDetails.json();
-      const infoDetails = dataDetails.meals[0];
-
-      const ingredientsObject = Object.fromEntries(Object.entries(infoDetails)
-        .filter(([key]) => key.includes('strIngredient')));
-      const ingredientsList = Object.values(ingredientsObject);
-
-      const measuresObject = Object.fromEntries(Object.entries(infoDetails)
-        .filter(([key]) => key.includes('strMeasure')));
-      const measuresList = Object.values(measuresObject);
-
-      const ingredientsNMeasures = ingredientsList.map((item, index) => ({
-        ingredient: item,
-        measure: measuresList[index],
-      }));
-
-      const youtube = details.strYoutube
-        ? details.strYoutube.replace('watch?v=', 'embed/') : undefined;
-
-      setDetails(infoDetails);
-      setIngredients(ingredientsNMeasures);
-      setYoutubeVideo(youtube);
-      setCategoryOrAlcoholic(infoDetails.strCategory);
-    } else {
-      const responseDetails = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`);
-      const dataDetails = await responseDetails.json();
-      const infoDetails = dataDetails.drinks[0];
-
-      const ingredientsObject = Object.fromEntries(Object.entries(infoDetails)
-        .filter(([key]) => key.includes('strIngredient')));
-      const ingredientsList = Object.values(ingredientsObject);
-
-      const measuresObject = Object.fromEntries(Object.entries(infoDetails)
-        .filter(([key]) => key.includes('strMeasure')));
-      const measuresList = Object.values(measuresObject);
-
-      const ingredientsNMeasures = ingredientsList.map((item, index) => ({
-        ingredient: item,
-        measure: measuresList[index],
-      }));
-
-      setDetails(infoDetails);
-      setIngredients(ingredientsNMeasures);
-      setCategoryOrAlcoholic(infoDetails.strAlcoholic);
-    }
-  };
-
   useEffect(() => {
-    fetchRecipe();
-    fecthRecomendation();
+    treatAPIdata(pathname, setDetails);
+    fecthRecomendation(pathname, setRecomendation);
     isAlreadyFavorite(pathname, setIsFavorite);
   }, []);
 
+  console.log(details);
   return (
     <>
       <button
@@ -134,51 +73,37 @@ function RecipeDetails() {
         <img src={ isFavorite ? blackHeartIcon : whiteHeartIcon } alt="" />
       </button>
       { isShared && <span>Link copied!</span>}
-      { pathname.includes('meals')
-        && (
-          <div>
-            <h1 data-testid="recipe-title">{ details.strMeal }</h1>
-            <img
-              data-testid="recipe-photo"
-              src={ details.strMealThumb }
-              alt={ details.strMeal }
-            />
-            <p data-testid="recipe-category">{ categoryOrAlcoholic }</p>
-            <p data-testid="instructions">{ details.strInstructions }</p>
-          </div>
-        ) }
-      { pathname.includes('drinks')
-        && (
-          <div>
-            <h1 data-testid="recipe-title">{ details.strDrink }</h1>
-            <img
-              data-testid="recipe-photo"
-              src={ details.strDrinkThumb }
-              alt={ details.strDrink }
-            />
-            <p data-testid="recipe-category">{ categoryOrAlcoholic }</p>
-            <p data-testid="instructions">{ details.strInstructions }</p>
-          </div>
-        ) }
-      <iframe
-        src={ youtubeVideo }
+      <div>
+        <h1 data-testid="recipe-title">{ details.name }</h1>
+        <img
+          data-testid="recipe-photo"
+          src={ details.thumb }
+          alt={ details.name }
+        />
+        { details.mealOrDrink === 'meals'
+          ? <p data-testid="recipe-category">{ details.category }</p>
+          : <p data-testid="recipe-category">{ details.alcoholicOrNot }</p>}
+        <p data-testid="instructions">{ details.instructions }</p>
+      </div>
+      { details.youtube
+      && <iframe
+        src={ details.youtube }
         frameBorder="0"
         allow="autoplay; encrypted-media"
         allowFullScreen
         title="video"
         data-testid="video"
-      />
-      {
-        ingredients.map((item, index) => (
-          <p
-            key={ index }
-            data-testid={ `${index}-ingredient-name-and-measure` }
-          >
-            { item.ingredient }
-            { item.measure }
-          </p>
-        ))
-      }
+      />}
+
+      { details.ingredients.map((item, index) => (
+        <p
+          key={ index }
+          data-testid={ `${index}-ingredient-name-and-measure` }
+        >
+          { item.ingredient }
+          { item.measure }
+        </p>
+      ))}
 
       <h1>Recomendados</h1>
       <div className="recomendation-carousel">
@@ -229,6 +154,7 @@ function RecipeDetails() {
             className="start-recipe-btn"
             data-testid="start-recipe-btn"
             type="button"
+            onClick={ () => goToStartRecipe(pathname, history) }
           >
             Continue Recipe
           </button>
