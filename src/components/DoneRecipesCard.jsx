@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom';
 function DoneRecipeCard(props) {
   const { name, index, alcoholicOrNot, image, category, handleShareClick, doneDate, id,
     nationality, type, tags } = props;
+  console.log(tags.slice(0, 2));
   const Currentpath = window.location.href.replace('/done-recipes', '');
   const detailsPathLink = `/${type}s/${id}`;
   const detailpath = `${Currentpath}/${type}s/${id}`;
+
   return (
     <div>
       <button

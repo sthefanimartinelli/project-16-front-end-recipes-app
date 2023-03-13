@@ -7,28 +7,30 @@ function DoneRecipes() {
   const [doneRecipes, setDoneRecipes] = useState([]);
   const [showCopiedMessage, setShowCopiedMessage] = useState(false);
   const [filteredRenderRecipes, setfilteredRenderRecipes] = useState([]);
+
   const getDoneRecipes = () => {
     const doneRecipesObj = JSON.parse(localStorage.getItem('doneRecipes'));
     setDoneRecipes(doneRecipesObj);
     setfilteredRenderRecipes(doneRecipesObj);
   };
+
   useEffect(() => {
     getDoneRecipes();
   }, []);
+
   const handleShareClick = (copiedLink) => {
-    const WAIT_FOR_IT = 2000;
     copy(copiedLink);
     setShowCopiedMessage(true);
-    setTimeout(() => setShowCopiedMessage(false), WAIT_FOR_IT);
   };
+
   const handleFilter = (filterType) => {
     if (filterType === 'all') {
-      setfilteredRenderRecipes(doneRecipes);
-      return;
+      return setfilteredRenderRecipes(doneRecipes);
     }
     const filteredRecipes = doneRecipes.filter((recipe) => recipe.type === filterType);
-    setfilteredRenderRecipes(filteredRecipes);
+    return setfilteredRenderRecipes(filteredRecipes);
   };
+
   return (
     <div>
       { showCopiedMessage && (

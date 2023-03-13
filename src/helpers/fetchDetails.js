@@ -64,6 +64,7 @@ export const treatAPIdata = async (pathname, setState) => {
     youtube,
     nationality: infoDetails.strArea ? infoDetails.strArea : '',
     instructions: infoDetails.strInstructions,
+    tags: infoDetails.strTags ? infoDetails.strTags : '',
   });
 
   setState(recipeInfo);

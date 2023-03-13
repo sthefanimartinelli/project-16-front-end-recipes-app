@@ -1,4 +1,4 @@
-.finish-recipe-btn {
-  bottom: 0;
-  position: fixed;
+.in-progress-container {
+  display: flex;
+  flex-direction: column;
 }
