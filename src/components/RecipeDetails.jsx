@@ -54,7 +54,6 @@ function RecipeDetails() {
     isAlreadyFavorite(pathname, setIsFavorite);
   }, []);
 
-  console.log(details);
   return (
     <>
       <button
@@ -70,7 +69,10 @@ function RecipeDetails() {
         data-testid="favorite-btn"
         onClick={ () => favoriteRecipes(details, pathname, setIsFavorite) }
       >
-        <img src={ isFavorite ? blackHeartIcon : whiteHeartIcon } alt="" />
+        <img
+          src={ isFavorite ? blackHeartIcon : whiteHeartIcon }
+          alt=""
+        />
       </button>
       { isShared && <span>Link copied!</span>}
       <div>

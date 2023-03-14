@@ -66,14 +66,4 @@ describe('Testes da página Profile', () => {
       expect(history.location.pathname).toBe('/');
     });
   });
-  // userEvent.click(await screen.findByRole('button', { name: /ícone de perfil/i }));
-  // await waitFor(() => {
-  //   expect(history.location.pathname).toBe('/profile');
-  // });
-
-  // userEvent.click(screen.findByRole('button', { name: /favorite recipes/i }));
-
-  // await waitFor(() => {
-  //   expect(history.location.pathname).toBe('/favorite-recipes');
-  // });
 });
