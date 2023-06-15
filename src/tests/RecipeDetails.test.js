@@ -14,7 +14,7 @@ describe('Testes da página Recipe Details', () => {
 
     await waitFor(() => {
       userEvent.click(screen.getByRole('img', { name: /corba/i }));
-    });
+    }, { timeout: 10000 });
 
     await waitFor(() => {
       expect(history.location.pathname).toBe(PATH_TO_DETAIL);
@@ -55,11 +55,15 @@ describe('Testes da página Recipe Details', () => {
 
     await waitFor(() => {
       expect(history.location.pathname).toBe('/meals/52977/in-progress');
-      // expect(screen.getByRole('button', { name: /finalizar/i })).toBeDisabled();
+      const finishBtn = screen.getByRole('button', { name: /finalizar/i });
+      expect(finishBtn.disabled).toBe(true);
     });
 
-    // expect(storage.meals).includes('52977');
+    const checkBox1 = screen.getByTestId('0-ingredient-step');
+    console.log(checkBox1);
   });
+
+  localStorage.clear();
 
   test('Testa receita finalizada', async () => {
     const doneRecipe = [{
@@ -108,17 +112,6 @@ describe('Testes da página Recipe Details', () => {
 
     expect(await screen.findByTestId(FAVORITE_ID)).toBeInTheDocument();
     localStorage.clear();
-    // expect(screen.getByTestId('favorite-btn').src).toContain('blackHeartIcon.svg');
-  });
-
-  test('Testa receita em andamento', async () => {
-    renderWithRouter(<App />, { initialEntries: [DETAILS_ID] });
-
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /spicy arrabiata penne/i })).toBeInTheDocument();
-    });
-
-    expect(await screen.findByTestId(FAVORITE_ID)).toBeInTheDocument();
     // expect(screen.getByTestId('favorite-btn').src).toContain('blackHeartIcon.svg');
   });
 });

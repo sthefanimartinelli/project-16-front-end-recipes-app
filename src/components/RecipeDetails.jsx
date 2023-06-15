@@ -26,26 +26,25 @@ function RecipeDetails() {
 
   const shareRecipe = () => {
     clipboardCopy(`http://localhost:3000${pathname}`);
-    if (isShared === false) {
-      setIsShared(true);
-    }
+    setIsShared(true);
   };
 
-  const isRecipeDone = () => {
-    const id = pathname.split('/')[2];
-    const doneRecipesList = JSON.parse(localStorage.getItem('doneRecipes')) || [];
-    if (doneRecipesList.length > 0) {
-      return doneRecipesList.some((recipe) => recipe.id === id);
-    }
-  };
+  // const isRecipeDone = () => {
+  //   const id = pathname.split('/')[2];
+  //   const doneRecipesList = JSON.parse(localStorage.getItem('doneRecipes')) || [];
+  //   if (doneRecipesList.length > 0) {
+  //     return doneRecipesList.some((recipe) => recipe.id === id);
+  //   }
+  // };
 
   const isRecipeInProgress = () => {
     const category = pathname.split('/')[1];
     const id = pathname.split('/')[2];
     const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes')) || {};
+    // console.log(inProgress);
     if (Object.keys(inProgress).length > 0) {
       return Object.keys(inProgress[category]).includes(id);
-    }
+    } return false;
   };
 
   useEffect(() => {
@@ -151,7 +150,7 @@ function RecipeDetails() {
           ))) }
       </div>
       { isRecipeInProgress()
-        && (
+        ? (
           <button
             className="start-recipe-btn"
             data-testid="start-recipe-btn"
@@ -160,18 +159,17 @@ function RecipeDetails() {
           >
             Continue Recipe
           </button>
+        )
+        : (
+          <button
+            className="start-recipe-btn"
+            data-testid="start-recipe-btn"
+            type="button"
+            onClick={ () => goToStartRecipe(pathname, history) }
+          >
+            Start Recipe
+          </button>
         )}
-      { !isRecipeDone()
-      && (
-        <button
-          className="start-recipe-btn"
-          data-testid="start-recipe-btn"
-          type="button"
-          onClick={ () => goToStartRecipe(pathname, history) }
-        >
-          Start Recipe
-        </button>
-      )}
     </>
   );
 }
